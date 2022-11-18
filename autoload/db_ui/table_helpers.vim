@@ -103,28 +103,28 @@ endfor
 
 let s:sqlserver_column_summary_query = "
       \ select c.column_name + ' (' + \n
-      \     isnull(( select 'PK, ' from information_schema.table_constraints as k join information_schema.key_column_usage as kcu on k.constraint_name = kcu.constraint_name where constraint_type='PRIMARY KEY' and k.table_name = c.table_name and kcu.column_name = c.column_name), '') + \n
-      \     isnull(( select 'FK, ' from information_schema.table_constraints as k join information_schema.key_column_usage as kcu on k.constraint_name = kcu.constraint_name where constraint_type='FOREIGN KEY' and k.table_name = c.table_name and kcu.column_name = c.column_name), '') + \n
+      \     isnull(( select 'PK, ' from INFORMATION_SCHEMA.TABLE_CONSTRAINTS as k join INFORMATION_SCHEMA.KEY_COLUMN_USAGE as kcu on k.constraint_name = kcu.constraint_name where constraint_type='PRIMARY KEY' and k.table_name = c.table_name and kcu.column_name = c.column_name), '') + \n
+      \     isnull(( select 'FK, ' from INFORMATION_SCHEMA.TABLE_CONSTRAINTS as k join INFORMATION_SCHEMA.KEY_COLUMN_USAGE as kcu on k.constraint_name = kcu.constraint_name where constraint_type='FOREIGN KEY' and k.table_name = c.table_name and kcu.column_name = c.column_name), '') + \n
       \     data_type + coalesce('(' + rtrim(cast(character_maximum_length as varchar)) + ')','(' + rtrim(cast(numeric_precision as varchar)) + ',' + rtrim(cast(numeric_scale as varchar)) + ')','(' + rtrim(cast(datetime_precision as varchar)) + ')','') + ', ' + \n
       \     case when is_nullable = 'YES' then 'null' else 'not null' end + ')' as Columns \n
-      \ from information_schema.columns c where c.table_name='{table}' and c.TABLE_SCHEMA = '{schema}'"
+      \ from INFORMATION_SCHEMA.columns c where c.table_name='{table}' and c.TABLE_SCHEMA = '{schema}'"
 
 let s:sqlserver_foreign_keys_query = "
       \ SELECT c.constraint_name  \n
       \    ,kcu.column_name as column_name  \n
       \    ,c2.table_name as foreign_table_name  \n
       \    ,kcu2.column_name as foreign_column_name \n
-      \ from   information_schema.table_constraints c  \n
-      \        inner join information_schema.key_column_usage kcu  \n
+      \ from   INFORMATION_SCHEMA.TABLE_CONSTRAINTS c  \n
+      \        inner join INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu  \n
       \          on c.constraint_schema = kcu.constraint_schema  \n
       \             and c.constraint_name = kcu.constraint_name  \n
-      \        inner join information_schema.referential_constraints rc  \n
+      \        inner join INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc  \n
       \          on c.constraint_schema = rc.constraint_schema  \n
       \             and c.constraint_name = rc.constraint_name  \n
-      \        inner join information_schema.table_constraints c2  \n
+      \        inner join INFORMATION_SCHEMA.TABLE_CONSTRAINTS c2  \n
       \          on rc.unique_constraint_schema = c2.constraint_schema  \n
       \             and rc.unique_constraint_name = c2.constraint_name  \n
-      \        inner join information_schema.key_column_usage kcu2  \n
+      \        inner join INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu2  \n
       \          on c2.constraint_schema = kcu2.constraint_schema  \n
       \             and c2.constraint_name = kcu2.constraint_name  \n
       \             and kcu.ordinal_position = kcu2.ordinal_position  \n
@@ -136,12 +136,12 @@ let s:sqlserver_references_query = "
       \     ,kcu1.table_name as foreign_table_name   \n
       \     ,kcu1.column_name as foreign_column_name  \n
       \     ,kcu2.column_name as column_name  \n
-      \ from information_schema.referential_constraints as rc  \n
-      \ inner join information_schema.key_column_usage as kcu1  \n
+      \ from INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS as rc  \n
+      \ inner join INFORMATION_SCHEMA.KEY_COLUMN_USAGE as kcu1  \n
       \     on kcu1.constraint_catalog = rc.constraint_catalog   \n
       \     and kcu1.constraint_schema = rc.constraint_schema  \n
       \     and kcu1.constraint_name = rc.constraint_name  \n
-      \ inner join information_schema.key_column_usage as kcu2  \n
+      \ inner join INFORMATION_SCHEMA.KEY_COLUMN_USAGE as kcu2  \n
       \     on kcu2.constraint_catalog = rc.unique_constraint_catalog   \n
       \     and kcu2.constraint_schema = rc.unique_constraint_schema  \n
       \     and kcu2.constraint_name = rc.unique_constraint_name  \n
@@ -151,10 +151,10 @@ let s:sqlserver_references_query = "
 let s:sqlserver_primary_keys = "
       \  select tc.constraint_name, kcu.column_name \n
       \  from \n
-      \      information_schema.table_constraints AS tc \n
-      \      JOIN information_schema.key_column_usage AS kcu \n
+      \      INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS tc \n
+      \      JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS kcu \n
       \        ON tc.constraint_name = kcu.constraint_name \n
-      \      JOIN information_schema.constraint_column_usage AS ccu \n
+      \      JOIN INFORMATION_SCHEMA.constraint_column_usage AS ccu \n
       \        ON ccu.constraint_name = tc.constraint_name \n
       \ where constraint_type = 'PRIMARY KEY' \n
       \ and tc.table_name = '{table}' and tc.table_schema = '{schema}'"
