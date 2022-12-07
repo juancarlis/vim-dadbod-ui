@@ -107,7 +107,7 @@ let s:sqlserver_column_summary_query = "
       \     isnull(( select 'FK, ' from INFORMATION_SCHEMA.TABLE_CONSTRAINTS as k join INFORMATION_SCHEMA.KEY_COLUMN_USAGE as kcu on k.constraint_name = kcu.constraint_name where constraint_type='FOREIGN KEY' and k.table_name = c.table_name and kcu.column_name = c.column_name), '') + \n
       \     data_type + coalesce('(' + rtrim(cast(character_maximum_length as varchar)) + ')','(' + rtrim(cast(numeric_precision as varchar)) + ',' + rtrim(cast(numeric_scale as varchar)) + ')','(' + rtrim(cast(datetime_precision as varchar)) + ')','') + ', ' + \n
       \     case when is_nullable = 'YES' then 'null' else 'not null' end + ')' as Columns \n
-      \ from INFORMATION_SCHEMA.COLUMNS c where c.table_name='{table}' and c.TABLE_SCHEMA = '{schema}'"
+      \ from INFORMATION_SCHEMA.columns c where c.table_name='{table}' and c.TABLE_SCHEMA = '{schema}'"
 
 let s:sqlserver_foreign_keys_query = "
       \ SELECT c.constraint_name  \n
