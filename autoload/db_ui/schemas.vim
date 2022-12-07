@@ -172,5 +172,6 @@ endfunction
 
 function! db_ui#schemas#query(db, scheme, query) abort
   let result = call('db#systemlist', s:format_query(a:db, a:scheme, a:query))
+  sleep 1m
   return map(result, {_, val -> substitute(val, "\r$", "", "")})
 endfunction
